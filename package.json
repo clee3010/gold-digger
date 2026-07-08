@@ -1,0 +1,13 @@
+{
+  "name": "gold-digger",
+  "version": "1.0.0",
+  "description": "A widget that informs user of current gold prices and allows you to buy the gold",
+  "license": "ISC",
+  "author": "Ciana Lee",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  }
+}
