@@ -1,15 +1,18 @@
 let currentPrice;
 const status = document.getElementById("connection-status");
 const priceDisplay = document.getElementById("price-display");
-const paid = document.getElementById("investment-amount");
+const paid = document.getElementById("investment-amount")
 const investBtn = document.getElementById("invest-btn");
+const summary = document.getElementById("investment-summary");
+const dialog = document.getElementById("dialog");
+const closeDialogBtn = document.getElementById("close-dialog-button");
 
 status.textContent = "Live Price 🟢";
 
 setInterval(async () => {
     try {
 
-        const response = await fetch("http://localhost:8000")
+        const response = await fetch("/price")
         const data = await response.json();
         currentPrice = data.price;
 
@@ -28,8 +31,11 @@ setInterval(async () => {
 try {
     investBtn.addEventListener("click", async (e) => {
         e.preventDefault();
-        console.log("clicked");
-        const response = await fetch ("http://localhost:8000", {
+
+        console.log("Before fetch");
+
+        try {
+        const response = await fetch ("/purchase", {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json",
@@ -37,8 +43,22 @@ try {
             },
             body: JSON.stringify({paid: paid.valueAsNumber, price: currentPrice})
         })
-        console.log("POST finished");
+
+        const bought = (paid.valueAsNumber/currentPrice).toFixed(2);
+
+        summary.textContent = "You just bought " + bought + " ounces (ozt) for £" + paid.valueAsNumber + ". \n You will receive documentation shortly."
+        dialog.showModal();
+
+        console.log("Dialog opened");
+        } catch(e) {
+            console.log(e);
+        }
     })
+
+    closeDialogBtn.addEventListener("click", () => {
+        dialog.close();
+    })
+
 } catch (e) {
     console.log("post error");
 }
