@@ -9,6 +9,6 @@ export async function parseJSONBody(req) {
         return JSON.parse(body);
 
     } catch (e) {
-
+        throw new Error(`Invalid JSON format: ${e}`)
     }
 }

@@ -1,5 +1,4 @@
 import http from 'node:http'
-import fs from 'node:fs'
 import { handleGet } from "./routeHandler.js"
 import { handlePost } from "./routeHandler.js"
 import { serveStatic} from "./utils/serveStatic.js"

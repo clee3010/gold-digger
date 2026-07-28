@@ -4,9 +4,7 @@ import fs from 'node:fs';
 import { sendResponse } from './utils/sendResponse.js';
 
 export function handleGet(req, res) {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({
+    sendResponse(res, 200, 'application/json', JSON.stringify({
         "status": "online",
         "price": getPrice()
     }))
@@ -14,21 +12,29 @@ export function handleGet(req, res) {
 }
 
 export async function handlePost(res, req) {
+    try {
+        const date = new Date();
+        let body;
+        
+        try {
+            body = await parseJSONBody(req);
+        } catch (e) {
+            return sendResponse(res, 400, 'text/html', 'Client error');
+        }
 
-    console.log("inside handlePost");
+        if (body.paid === undefined || body.price === undefined || body.paid <= 0 || body.price <= 0) {
+            return sendResponse(res, 400, 'text/html', 'Client error');
+        }
+        
+        const log = date.toISOString() + ", amount paid: £" + body.paid + ", price per Oz: £" + body.price 
+        + ", gold sold: " + (body.paid / body.price) + " Oz \n";
+        
+        fs.appendFile('purchases.txt', log, (e) => {
+            console.log(e);
+        })
 
-    const date = new Date();
-    
-    const body = await parseJSONBody(req);
-    
-    const log = date.toISOString() + ", amount paid: £" + body.paid + ", price per Oz: £" + body.price 
-    + ", gold sold: " + (body.paid / body.price) + " Oz \n";
-    
-    fs.appendFile('purchases.txt', log, (e) => {
-        console.log(e);
-    })
-
-    res.statusCode = 201;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ success: true }));
+        sendResponse(res, 201,"application/json",  JSON.stringify({ success: true }))
+    } catch (e) {
+        sendResponse(res, 500, 'text/html', `<html><h1>Server Error: ${e.code}</h1></html>`)
+    }
 }
