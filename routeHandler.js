@@ -2,6 +2,7 @@ import { getPrice } from './utils/getPrice.js'
 import { parseJSONBody } from "./utils/parseJSONBody.js";
 import fs from 'node:fs';
 import { sendResponse } from './utils/sendResponse.js';
+import { getPdf } from './utils/getPdf.js';
 
 export function handleGet(req, res) {
     sendResponse(res, 200, 'application/json', JSON.stringify({
@@ -32,6 +33,9 @@ export async function handlePost(res, req) {
         fs.appendFile('purchases.txt', log, (e) => {
             console.log(e);
         })
+
+        const __dirname = import.meta.dirname
+        getPdf(__dirname, body.price, body.paid, date.toISOString());
 
         sendResponse(res, 201,"application/json",  JSON.stringify({ success: true }))
     } catch (e) {
