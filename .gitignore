@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Generated application data
+purchases.txt
+receipts/*
+!receipts/.gitkeep
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+
+# macOS
+.DS_Store
